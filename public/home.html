@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro de Produtos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Bem-vindo!</h1>
+  <a href="/logout">Logout</a>
+
+  <h2>Cadastrar Produto</h2>
+  <form action="/add-product" method="POST">
+    <input type="text" name="barcode" placeholder="Código de Barras" required />
+    <input type="text" name="description" placeholder="Descrição" required />
+    <input type="number" name="costPrice" placeholder="Preço de Custo" required />
+    <input type="number" name="salePrice" placeholder="Preço de Venda" required />
+    <input type="date" name="validityDate" placeholder="Data de Validade" required />
+    <input type="number" name="stockQty" placeholder="Quantidade em Estoque" required />
+    <input type="text" name="manufacturer" placeholder="Fabricante" required />
+    <button type="submit">Cadastrar</button>
+  </form>
+
+  <h2>Produtos Cadastrados</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Código de Barras</th>
+        <th>Descrição</th>
+        <th>Preço de Custo</th>
+        <th>Preço de Venda</th>
+        <th>Data de Validade</th>
+        <th>Quantidade</th>
+        <th>Fabricante</th>
+      </tr>
+    </thead>
+    <tbody id="productTable"></tbody>
+  </table>
+
+  <script>
+    fetch('/products')
+      .then((res) => res.json())
+      .then(({ products, lastAccess }) => {
+        const table = document.getElementById('productTable');
+        products.forEach((product) => {
+          const row = table.insertRow();
+          Object.values(product).forEach((value) => {
+            const cell = row.insertCell();
+            cell.textContent = value;
+          });
+        });
+        if (lastAccess) {
+          const lastAccessDiv = document.createElement('div');
+          lastAccessDiv.textContent = `Último acesso: ${lastAccess}`;
+          document.body.appendChild(lastAccessDiv);
+        }
+      });
+  </script>
+</body>
+</html>
